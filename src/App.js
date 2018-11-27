@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     areas: [],
     hosts: [],
-    selectedHost: {}
+    selectedHost: null
   }
 
   componentDidMount() {
@@ -29,10 +29,25 @@ class App extends Component {
   }
 
   handleSelectHost = (id) => {
-    let foundHost = this.state.hosts.find(host => host.id === id)
     this.setState({
-      selectedHost: foundHost
+      selectedHost: id
     }, () => console.log(this.state.selectedHost))
+  }
+
+  handleAreaChange = (e, {value}) => {
+    // debugger;
+    this.setState((currentState) => {
+      return currentState.hosts.map(host => {
+        if (host.id === currentState.selectedHost) {
+          return {...host, area: value}
+        } else {
+          return host
+        }
+      })
+    }, ()=>console.log(this.state))
+    // the 'value' attribute is given via Semantic's Dropdown component.
+    // Put a debugger in here and see what the "value" variable is when you pass in different options.
+    // See the Semantic docs for more info: https://react.semantic-ui.com/modules/dropdown/#usage-controlled
   }
 
   render(){
@@ -44,9 +59,11 @@ class App extends Component {
           handleSelectHost={this.handleSelectHost}
         />
         <Headquarters
+          areas={this.state.areas}
           hosts={this.state.hosts}
           selectedHost={this.state.selectedHost}
           handleSelectHost={this.handleSelectHost}
+          handleAreaChange={this.handleAreaChange}
         />
       </Segment>
     )

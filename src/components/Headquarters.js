@@ -17,11 +17,16 @@ class Headquarters extends Component {
           <ColdStorage
             hosts={this.filterInactiveHosts()}
             handleSelectHost={this.props.handleSelectHost}
-            selectedHost={this.props.selectedHost} 
+            selectedHost={this.props.selectedHost}
           />
         </Grid.Column>
         <Grid.Column width={5}>
-          <Details />
+          <Details
+            hosts={this.props.hosts}
+            selectedHost={this.props.selectedHost}
+            areas={this.props.areas}
+            handleAreaChange={this.props.handleAreaChange}
+          />
         </Grid.Column>
         <Grid.Column width={3}>
 
