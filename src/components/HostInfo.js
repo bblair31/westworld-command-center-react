@@ -9,23 +9,18 @@ const cleanName = (name) => {
     .join(' ')
 }
 
-const dropdownOptions = (props) => {
-  return props.areas.map(area => {
+const dropdownOptions = (areas) => {
+  return areas.map(area => {
     return {key: area.id, text: cleanName(area.name), value: area.name}
   })
 }
 
-const toggle = () => {
-  console.log("The radio button fired");
-}
-
 const HostInfo = (props) => {
-
     return (
       <Grid>
         <Grid.Column width={6}>
           <Image
-            src={ props.imageUrl }
+            src={ props.host.imageUrl }
             floated='left'
             size='small'
             className="hostImg"
@@ -39,10 +34,9 @@ const HostInfo = (props) => {
               </Card.Header>
               <Card.Meta>
                 <Radio
-                  onChange={() => toggle()}
+                  onChange={() => props.toggleActive(props.host.id)}
                   label={props.host.active === true ? "Active" :"Decommissioned"}
                   checked={true}
-                  // {/* Checked takes a boolean and determines what position the switch is in. Should it always be true? */}
                   className="radio"
                   slider
                 />
@@ -52,8 +46,8 @@ const HostInfo = (props) => {
               Current Area:
               <Dropdown
                 onChange={props.handleAreaChange}
-                value={props.host.currentArea}
-                options={dropdownOptions(props)}
+                value={props.host.area}
+                options={dropdownOptions(props.areas)}
                 selection
               />
             </Card.Content>

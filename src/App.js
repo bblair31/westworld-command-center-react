@@ -12,6 +12,7 @@ class App extends Component {
   state = {
     areas: [],
     hosts: [],
+    selectedHost: null
   }
 
   componentDidMount() {
@@ -22,15 +23,7 @@ class App extends Component {
       }))
     fetch(HOSTS_URL)
       .then(response => response.json())
-      .then(data => this.processData(data))
-  }
-
-  processData = (data) => {
-    this.setState({
-      hosts: data.map(host => {
-        return {...host, selected:false}
-      })
-    })
+      .then(data => this.setState({hosts: data}))
   }
 
   findHost = (id) => {
@@ -40,29 +33,39 @@ class App extends Component {
   handleSelectHost = (id) => {
     let foundHost = this.findHost(id)
 
-    const modifiedHosts =  [...this.state.hosts].map(host =>{
-      if (host.id === foundHost.id) {
-        return {...host, selected: true}
-      } else {
-        return {...host, selected: false}
-      }
-    })
-
     this.setState({
-      hosts: modifiedHosts
+      selectedHost: foundHost.id
     })
   }
 
   handleAreaChange = (e, {value}) => {
-    this.setState((currentState) => {
-      return currentState.hosts.map(host => {
-        if (host.id === currentState.selectedHost) {
+    this.setState((prevState) => {
+      return {hosts: prevState.hosts.map(host => {
+        if (host.id === prevState.selectedHost) {
           return {...host, area: value}
         } else {
           return host
         }
-      })
+      })}
     })
+  }
+
+  toggleActive = (id) => {
+    this.setState((prevState) => {
+      return {hosts: prevState.hosts.map(host => {
+        if (host.id === id && host.active === false) {
+          return {...host, active: true}
+        } else if (host.id === id && host.active === true) {
+          return {...host, active: false}
+        } else {
+          return host
+        }
+      })}
+    })
+  }
+
+  filterActiveHosts = () => {
+    return this.state.hosts.filter(host => host.active === true)
   }
 
   render(){
@@ -70,14 +73,17 @@ class App extends Component {
       <Segment id='app'>
         <WestworldMap
           areas={this.state.areas}
-          hosts={this.state.hosts}
+          hosts={this.filterActiveHosts()}
+          selectedHost={this.state.selectedHost}
           handleSelectHost={this.handleSelectHost}
         />
         <Headquarters
           areas={this.state.areas}
           hosts={this.state.hosts}
+          selectedHost={this.state.selectedHost}
           handleSelectHost={this.handleSelectHost}
           handleAreaChange={this.handleAreaChange}
+          toggleActive={this.toggleActive}
         />
       </Segment>
     )

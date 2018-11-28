@@ -12,6 +12,7 @@ const HostList = (props) => {
             key={host.id}
             host={host}
             handleSelectHost={props.handleSelectHost}
+            selectedHost={props.selectedHost}
           />
         )
       })}

@@ -6,7 +6,12 @@ import HostInfo from './HostInfo'
 
 const renderSomething = (props) => {
   if (props.host) {
-    return <HostInfo host={props.host} areas={props.areas} handleAreaChange={props.handleAreaChange} imageUrl={props.host.imageUrl} currentArea={props.host.area}/>
+    return <HostInfo
+      host={props.host}
+      areas={props.areas}
+      handleAreaChange={props.handleAreaChange}
+      toggleActive={props.toggleActive}
+    />
   } else {
     return <Image size='medium' src={Images.westworldLogo}/>
   }

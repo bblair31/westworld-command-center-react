@@ -1,5 +1,6 @@
 import React from 'react';
 import '../stylesheets/Area.css'
+import HostList from './HostList'
 
 const cleanName = (name) => {
   return name.toLowerCase()
@@ -8,16 +9,19 @@ const cleanName = (name) => {
     .join(' ')
 }
 
-const Area = ({ area }) => (
 
-  <div className='area' id={area.name}>
-    <h3 className='labels'>{cleanName(area.name)}</h3>
-
-    {/* See Checkpoint 1 item 2 in the Readme for a clue as to what goes here */}
-
-  </div>
-
-)
+const Area = (props) => {
+  return (
+    <div className='area' id={props.area.name}>
+      <h3 className='labels'>{cleanName(props.area.name)}</h3>
+      <HostList
+        hosts={props.areaHosts}
+        handleSelectHost={props.handleSelectHost}
+        selectedHost={props.selectedHost}
+      />
+    </div>
+  )
+}
 
 // Area.propTypes = {
 //   hosts: function(props, propName, componentName){
