@@ -35,14 +35,12 @@ const HostInfo = (props) => {
           <Card>
             <Card.Content>
               <Card.Header>
-                {"Bob"} | { true ? <Icon name='man' /> : <Icon name='woman' />}
-                { /* Think about how the above should work to conditionally render the right First Name and the right gender Icon */ }
+                {props.host.firstName} | { props.host.gender === "Male" ? <Icon name='man' /> : <Icon name='woman' />}
               </Card.Header>
               <Card.Meta>
                 <Radio
                   onChange={() => toggle()}
-                  label={"Active"}
-                  // {/* Sometimes the label should take "Decommissioned". How are we going to conditionally render that? */}
+                  label={props.host.active === true ? "Active" :"Decommissioned"}
                   checked={true}
                   // {/* Checked takes a boolean and determines what position the switch is in. Should it always be true? */}
                   className="radio"
@@ -54,7 +52,7 @@ const HostInfo = (props) => {
               Current Area:
               <Dropdown
                 onChange={props.handleAreaChange}
-                value={props.currentArea}
+                value={props.host.currentArea}
                 options={dropdownOptions(props)}
                 selection
               />

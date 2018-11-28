@@ -10,6 +10,10 @@ class Headquarters extends Component {
     return this.props.hosts.filter(host => host.active === false)
   }
 
+  getSelectedHost = () => {
+    return this.props.hosts.find(host => host.selected === true)
+  }
+
   render(){
     return(
       <Grid celled='internally'>
@@ -17,13 +21,11 @@ class Headquarters extends Component {
           <ColdStorage
             hosts={this.filterInactiveHosts()}
             handleSelectHost={this.props.handleSelectHost}
-            selectedHost={this.props.selectedHost}
           />
         </Grid.Column>
         <Grid.Column width={5}>
           <Details
-            hosts={this.props.hosts}
-            selectedHost={this.props.selectedHost}
+            host={this.getSelectedHost()}
             areas={this.props.areas}
             handleAreaChange={this.props.handleAreaChange}
           />

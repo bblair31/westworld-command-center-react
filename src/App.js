@@ -12,7 +12,6 @@ class App extends Component {
   state = {
     areas: [],
     hosts: [],
-    selectedHost: null
   }
 
   componentDidMount() {
@@ -23,19 +22,38 @@ class App extends Component {
       }))
     fetch(HOSTS_URL)
       .then(response => response.json())
-      .then(data => this.setState({
-        hosts: data
-      }))
+      .then(data => this.processData(data))
+  }
+
+  processData = (data) => {
+    this.setState({
+      hosts: data.map(host => {
+        return {...host, selected:false}
+      })
+    })
+  }
+
+  findHost = (id) => {
+    return this.state.hosts.find(host => host.id === id)
   }
 
   handleSelectHost = (id) => {
+    let foundHost = this.findHost(id)
+
+    const modifiedHosts =  [...this.state.hosts].map(host =>{
+      if (host.id === foundHost.id) {
+        return {...host, selected: true}
+      } else {
+        return {...host, selected: false}
+      }
+    })
+
     this.setState({
-      selectedHost: id
-    }, () => console.log(this.state.selectedHost))
+      hosts: modifiedHosts
+    })
   }
 
   handleAreaChange = (e, {value}) => {
-    // debugger;
     this.setState((currentState) => {
       return currentState.hosts.map(host => {
         if (host.id === currentState.selectedHost) {
@@ -44,10 +62,7 @@ class App extends Component {
           return host
         }
       })
-    }, ()=>console.log(this.state))
-    // the 'value' attribute is given via Semantic's Dropdown component.
-    // Put a debugger in here and see what the "value" variable is when you pass in different options.
-    // See the Semantic docs for more info: https://react.semantic-ui.com/modules/dropdown/#usage-controlled
+    })
   }
 
   render(){
@@ -55,13 +70,12 @@ class App extends Component {
       <Segment id='app'>
         <WestworldMap
           areas={this.state.areas}
-          selectedHost={this.state.selectedHost}
+          hosts={this.state.hosts}
           handleSelectHost={this.handleSelectHost}
         />
         <Headquarters
           areas={this.state.areas}
           hosts={this.state.hosts}
-          selectedHost={this.state.selectedHost}
           handleSelectHost={this.handleSelectHost}
           handleAreaChange={this.handleAreaChange}
         />

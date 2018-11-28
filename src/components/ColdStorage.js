@@ -11,7 +11,6 @@ const ColdStorage = (props) => (
       <HostList
         hosts={props.hosts}
         handleSelectHost={props.handleSelectHost}
-        selectedHost={props.selectedHost} 
       />
     </Segment>
   </Segment.Group>
