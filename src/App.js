@@ -12,7 +12,8 @@ class App extends Component {
   state = {
     areas: [],
     hosts: [],
-    selectedHost: null
+    selectedHost: null,
+    allMessages: []
   }
 
   componentDidMount() {
@@ -41,33 +42,47 @@ class App extends Component {
   handleAreaChange = (e, {value}) => {
     let foundArea = this.state.areas.find(area => area.name === value)
     let foundAreaHosts = this.state.hosts.filter(host => host.area === foundArea.name)
+    let message
 
     if (foundAreaHosts.length < foundArea.limit) {
       this.setState((prevState) => {
         return {hosts: prevState.hosts.map(host => {
           if (host.id === prevState.selectedHost) {
+            message = {Notify: `${host.firstName} set in ${value}`}
             return {...host, area: value}
           } else {
             return host
           }
-        })}
+        }), allMessages:[message, ...prevState.allMessages]}
       })
     } else {
-      alert("This area is full")
+      this.setState(prevState => {
+        let foundHost = prevState.hosts.find(host => host.id === prevState.selectedHost)
+        let formattedArea = value.split('_').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ')
+
+
+        message = {Error: `Too many hosts. Cannot add ${foundHost.firstName} to ${formattedArea}`}
+        return {allMessages: [message, ...prevState.allMessages]}
+      })
+
     }
 }
 
   toggleActive = (id) => {
+    let message
+
     this.setState((prevState) => {
       return {hosts: prevState.hosts.map(host => {
         if (host.id === id && host.active === false) {
+          message = {Warn: `Activated ${host.firstName}`}
           return {...host, active: true}
         } else if (host.id === id && host.active === true) {
+          message = {Notify: `Decommissioned ${host.firstName}`}
           return {...host, active: false}
         } else {
           return host
         }
-      })}
+      }), allMessages:[message, ...prevState.allMessages]}
     })
   }
 
@@ -76,21 +91,25 @@ class App extends Component {
   }
 
   handleAllActivation = (event) => {
+    let message
+
     if (event.target.innerText === "ACTIVATE ALL") {
       event.target.innerText = "DECOMMISSION ALL"
       event.target.style.backgroundColor= "green"
+      message = {Warn: 'Activating all hosts!'}
       this.setState((prevState) => {
         return {hosts: prevState.hosts.map(host => {
           return {...host, active: true}
-        })}
+        }), allMessages:[message, ...prevState.allMessages]}
       })
     } else if (event.target.innerText === "DECOMMISSION ALL") {
       event.target.innerText = "ACTIVATE ALL"
       event.target.style.backgroundColor= "red"
+      message = {Notify: 'Decommissiong all hosts.'}
       this.setState((prevState) => {
         return {hosts: prevState.hosts.map(host => {
           return {...host, active: false}
-        })}
+        }), allMessages:[message, ...prevState.allMessages]}
       })
     }
   }
@@ -112,6 +131,7 @@ class App extends Component {
           handleAreaChange={this.handleAreaChange}
           toggleActive={this.toggleActive}
           handleAllActivation={this.handleAllActivation}
+          allMessages={this.state.allMessages}
         />
       </Segment>
     )
