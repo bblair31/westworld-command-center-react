@@ -39,16 +39,23 @@ class App extends Component {
   }
 
   handleAreaChange = (e, {value}) => {
-    this.setState((prevState) => {
-      return {hosts: prevState.hosts.map(host => {
-        if (host.id === prevState.selectedHost) {
-          return {...host, area: value}
-        } else {
-          return host
-        }
-      })}
-    })
-  }
+    let foundArea = this.state.areas.find(area => area.name === value)
+    let foundAreaHosts = this.state.hosts.filter(host => host.area === foundArea.name)
+
+    if (foundAreaHosts.length < foundArea.limit) {
+      this.setState((prevState) => {
+        return {hosts: prevState.hosts.map(host => {
+          if (host.id === prevState.selectedHost) {
+            return {...host, area: value}
+          } else {
+            return host
+          }
+        })}
+      })
+    } else {
+      alert("This area is full")
+    }
+}
 
   toggleActive = (id) => {
     this.setState((prevState) => {
@@ -68,6 +75,26 @@ class App extends Component {
     return this.state.hosts.filter(host => host.active === true)
   }
 
+  handleAllActivation = (event) => {
+    if (event.target.innerText === "ACTIVATE ALL") {
+      event.target.innerText = "DECOMMISSION ALL"
+      event.target.style.backgroundColor= "green"
+      this.setState((prevState) => {
+        return {hosts: prevState.hosts.map(host => {
+          return {...host, active: true}
+        })}
+      })
+    } else if (event.target.innerText === "DECOMMISSION ALL") {
+      event.target.innerText = "ACTIVATE ALL"
+      event.target.style.backgroundColor= "red"
+      this.setState((prevState) => {
+        return {hosts: prevState.hosts.map(host => {
+          return {...host, active: false}
+        })}
+      })
+    }
+  }
+
   render(){
     return (
       <Segment id='app'>
@@ -84,6 +111,7 @@ class App extends Component {
           handleSelectHost={this.handleSelectHost}
           handleAreaChange={this.handleAreaChange}
           toggleActive={this.toggleActive}
+          handleAllActivation={this.handleAllActivation}
         />
       </Segment>
     )

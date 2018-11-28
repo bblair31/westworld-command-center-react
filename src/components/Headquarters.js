@@ -3,6 +3,7 @@ import '../stylesheets/Headquarters.css';
 import { Grid } from 'semantic-ui-react';
 import Details from './Details'
 import ColdStorage from './ColdStorage'
+import LogPanel from './LogPanel'
 
 class Headquarters extends Component {
 
@@ -33,9 +34,7 @@ class Headquarters extends Component {
           />
         </Grid.Column>
         <Grid.Column width={3}>
-
-        {/* and here. Take visual cues from the screenshot/video in the Readme. */}
-
+          <LogPanel handleAllActivation={this.props.handleAllActivation} />
         </Grid.Column>
       </Grid>
     )
